@@ -1459,17 +1459,17 @@ Function8998b:
 	ret
 
 Function8999c:
-	ld de, wPlayerName
-	call PlaceString
+	ld de, String_899ac
+	call PlaceString	
 	;inc bc ; whitespace not needed
 	ld h, b
 	ld l, c
-	ld de, String_899ac
+	ld de, wPlayerName
 	call PlaceString
 	ret
 
 String_899ac:
-	db "'S CARD@";"の　めいし@"
+	db "KARTE DE @";"の　めいし@"
 
 Function899b2:
 	ld bc, wPlayerName
