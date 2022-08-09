@@ -1605,8 +1605,8 @@ Function1057d7: ; Card Trade GFX
 	hlcoord 2, 5 ; Location of NAME CARD
 	ld a, $d
 	call .Load6Row
-	hlcoord 5, 5 ; Location of the pipe stop near NAME CARD
-	ld [hl], $c
+;	hlcoord 5, 5 ; Location of the pipe stop near NAME CARD
+;	ld [hl], $c
 	hlcoord 18, 5
 	ld [hl], $a
 	hlcoord 18, 16
