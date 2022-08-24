@@ -421,10 +421,10 @@ Pokedex_ReinitDexEntryScreen:
 
 DexEntryScreen_ArrowCursorData:
 	db D_RIGHT | D_LEFT, 4
-	dwcoord 1, 17  ; PAGE
-	dwcoord 6, 17  ; AREA
-	dwcoord 11, 17 ; CRY
-	dwcoord 15, 17 ; PRNT
+	dwcoord 1, 17  ; S.
+	dwcoord 6, 17  ; GEB.
+	dwcoord 11, 17 ; RUF
+	dwcoord 15, 17 ; DRCK
 
 DexEntryScreen_MenuActionJumptable:
 	dw Pokedex_Page
@@ -1169,11 +1169,11 @@ Pokedex_DrawDexEntryScreenBG:
 .Unused:
 	db $5c, $5d, -1 ; No.
 .Height:
-	db "HT  ?", $5e, "??", $5f, -1 ; HT  ?'??"
+	db "TAI  ???m", -1 
 .Weight:
-	db "PDS  ???kg", -1 ; WT   ???lb
-.MenuItems:
-	db $3b, " PAGE AREA CRY PRNT", -1
+	db "PDS  ???kg", -1  
+.MenuItems: 
+	db $3b, " PAGE ZONE CRI IMPR", -1
 
 Pokedex_DrawOptionScreenBG:
 	call Pokedex_FillBackgroundColor2
@@ -1198,7 +1198,7 @@ Pokedex_DrawOptionScreenBG:
 	ret
 
 .Title:
-	db $3b, " OPTION ", $3c, -1
+	db $3b, " OPTIONS ", $3c, -1
 
 .Modes:
 	db   "NOUVEAU MODE"
@@ -1232,7 +1232,7 @@ Pokedex_DrawSearchScreenBG:
 	ret
 
 .Title:
-	db $3b, " SEARCH ", $3c, -1
+	db $3b, " CHERCHER ", $3c, -2
 
 .TypeLeftRightArrows:
 	db $3d, "        ", $3e, -1
@@ -1278,9 +1278,9 @@ Pokedex_DrawSearchResultsScreenBG:
 	ret
 
 .BottomWindowText:
-	db   "SEARCH RESULTS"
-	next "  TYPE"
-	next "    FOUND!"
+	db   "RESULTAT RECHERCHE"
+	next "TYPE:  "
+	next "    TROUVE(S)!"
 	db   "@"
 
 Pokedex_PlaceSearchResultsTypeStrings:
@@ -1964,8 +1964,8 @@ Pokedex_DisplayTypeNotFoundMessage:
 	ret
 
 .TypeNotFound:
-	db   "The specified type"
-	next "was not found.@"
+	db   "Tipo especificado"
+	next "no encontrado.@"
 
 Pokedex_UpdateCursorOAM:
 	ld a, [wCurDexMode]
