@@ -102,7 +102,7 @@ Function49f16:
 	jp .joy_loop
 
 MobileString1:
-	db   "REPERTOIRE"
+	db   "FICHIER CARTE"
 	next "MESSAGES"
 	next "PROFIL"
 	next "PARAMETRES"
