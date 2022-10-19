@@ -6,7 +6,7 @@ MainMenu_Mobile:
 	call Function4a6c5
 Function49f0a:
 	call ClearBGPalettes
-	call Function4a3a7
+	call LoadTilesAndDisplayMobileMenuBackground
 	call Function4a492
 	call ClearBGPalettes
 Function49f16:
@@ -16,7 +16,7 @@ Function49f16:
 	hlcoord 3, 0 ;4, 0
 	ld b, 10 ; menu height
 	ld c, 12 ;10 ; menu width
-	call Function48cdc
+	call DisplayBlankGoldenBox
 	hlcoord 5, 2 ;6, 2 ; menu text position
 	ld de, MobileString1
 	call PlaceString
@@ -53,13 +53,15 @@ Function49f16:
 	ld hl, wMenuCursorY
 	ld a, [hl]
 	cp 1
-	jp z, Function4a098
+	jp z, OpenCardFolder
 	cp 2
-	jp z, Function4a0b9
+	jp z, OpenMessages
 	cp 3
-	jp z, Function4a0c2
+	jp z, OpenMobileProfile
 	cp 4
-	jp z, Function4a100
+	jp z, OpenMobileSettings
+
+; Exit
 	ld a, 1
 	call MenuClickSound
 .b_button
@@ -100,34 +102,34 @@ Function49f16:
 	jp .joy_loop
 
 MobileString1:
-	db   "CARD FOLDER"
+	db   "REPERTOIRE"
 	next "MESSAGES"
-	next "PROFILE"
-	next "SETTINGS"
-	next "EXIT"
+	next "PROFIL"
+	next "PARAMETRES"
+	next "QUITTER"
 	db   "@"
 
 MobileStrings2:
 
 String_0x49fe9:
-	db   "Create and view"
-	next "friends' CARDS.@"
+	db   "Créer et voir les"
+	next "CARTES des amis.@"
 
 String_0x4a004:
-	db   "Set MESSAGES";"モバイルたいせんや　じぶんのめいしで"
-	next "shown to others.@";"つかう　あいさつ¯つくります@"
+	db   "Choisir les";"モバイルたいせんや　じぶんのめいしで"
+	next "MESSAGES affichés.@";"つかう　あいさつ¯つくります@"
 
 String_0x4a026:
-	db   "Change your age";"あなた<NO>じゅうしょや　ねんれいの"
-	next "and address.@";"せ<TTE>い¯かえられます@"
+	db   "Changer votre âge";"あなた<NO>じゅうしょや　ねんれいの"
+	next "et adresse.@";"せ<TTE>い¯かえられます@"
 
 String_0x4a042:
-	db   "Change settings";"モバイルセンター<NI>せつぞくするとき"
-	next "used to connect.@";"ひつような　こと¯きめます@"
+	db   "Paramètres";"モバイルセンター<NI>せつぞくするとき"
+	next "de connexion.@";"ひつような　こと¯きめます@"
 
 String_0x4a062:
-	db   "Return to the";"まえ<NO>がめん　<NI>もどります"
-	next "previous screen.@";"@"
+	db   "Revenir à l'écran";"まえ<NO>がめん　<NI>もどります"
+	next "précédent.@";"@"
 
 MobileMenu_InitMenuBuffers:
 	ld hl, w2DMenuCursorInitY
@@ -157,26 +159,26 @@ MobileMenu_InitMenuBuffers:
 	ld [hli], a ; wMenuCursorY, wMenuCursorX
 	ret
 
-Function4a098:
+OpenCardFolder:
 	ld a, 2
 	call MenuClickSound
 	call PlaceHollowCursor
 	call WaitBGMap
 	call LoadStandardMenuHeader
-	farcall Function89de0
+	farcall CardFolderMenu
 	call Call_ExitMenu
 	call MG_Mobile_Layout_LoadPals
-	call Function4a485
+	call LoadMobileMenuUITiles
 	pop bc
 	jp Function49f16
 
-Function4a0b9:
+OpenMessages:
 	ld a, 2
 	call MenuClickSound
 	pop bc
 	jp Function4a4c4
 
-Function4a0c2:
+OpenMobileProfile:
 	ld a, 2
 	call MenuClickSound
 	ld a, BANK(sPlayerData)
@@ -202,7 +204,7 @@ Function4a0c2:
 	call DelayFrames
 	jr asm_4a111
 
-Function4a100:
+OpenMobileSettings:
 	ld a, 2
 	call MenuClickSound
 	call ClearBGPalettes
@@ -241,17 +243,17 @@ Function4a118:
 	ret
 
 Function4a13b:
-	call Function4a3a7
+	call LoadTilesAndDisplayMobileMenuBackground
 	call Function4a492
 	call Function4a373
 	ld c, 10
 	call DelayFrames
 
-Function4a149:
+MobileSettingsMenu:
 	hlcoord 1, 2
 	ld b, $6
 	ld c, $10
-	call Function48cdc
+	call DisplayBlankGoldenBox
 	hlcoord 3, 4
 	ld de, String_4a1ef
 	call PlaceString
@@ -329,9 +331,9 @@ asm_4a19d:
 	jp Function4a195
 
 String_4a1ef:
-	db   "MOBILE CENTER";"モバイルセンター¯えらぶ"
-	next "LOG-IN PASSWORD";"ログインパスワード¯いれる"
-	next "BACK@";"もどる@"
+	db   "CENTRE MOBILE";"モバイルセンター¯えらぶ"
+	next "MOT DE PASSE";"ログインパスワード¯いれる"
+	next "RETOUR@";"もどる@"
 
 Function4a20e:
 	ld a, $1
@@ -352,21 +354,21 @@ Function4a221:
 	jr .asm_4a235
 .asm_4a235
 	pop bc
-	jp Function4a149
+	jp MobileSettingsMenu
 
 Function4a239:
 	pop bc
 	jp Function4a13b
 
 Strings_4a23d:
-	db   "Choose the MOBILE";"いつも　せつぞく¯する"
-	next "CENTER to use.@";"モバイルセンター¯えらびます@"
+	db   "Choisir le CENTRE";"いつも　せつぞく¯する"
+	next "MOBILE à utiliser.@";"モバイルセンター¯えらびます@"
 
-	db   "The PASSWORD used";"モバイルセンター<NI>せつぞくするとき"
-	next "to connect.@";"つかうパスワード¯ほぞんできます@"
+	db   "Le MOT DE PASSE";"モバイルセンター<NI>せつぞくするとき"
+	next "de connexion.@";"つかうパスワード¯ほぞんできます@"
 
-	db   "Return to the";"まえ<NO>がめん　<NI>もどります@"
-	next "previous screen.@"
+	db   "Revenir à l'écran";"まえ<NO>がめん　<NI>もどります@"
+	next "précédent.@"
 
 	db   "@"
 
@@ -374,7 +376,7 @@ Function4a28a:
 	hlcoord 2, 3
 	lb bc, 6, 1
 	ld a, " "
-	call Function4a6d8
+	call MobileMenu_FillBGArea
 	call PlaceHollowCursor
 	call WaitBGMap
 	
@@ -391,7 +393,7 @@ Function4a28a:
 	hlcoord 11, 0;12, 0
 	ld b, $5
 	ld c, $7;$6
-	call Function48cdc
+	call DisplayBlankGoldenBox
 	hlcoord 13, 1;14, 1
 	ld de, String_4a34b
 	call PlaceString
@@ -456,9 +458,9 @@ MenuHeader_0x4a346:
 	menu_coords 11, 0, SCREEN_WIDTH - 1, 6;12, 0, SCREEN_WIDTH - 1, 6
 
 String_4a34b:
-	db   "CHANGE";"いれなおす"
-	next "DELETE";"けす"
-	next "CANCEL@";"もどる@"
+	db   "EDITER";"いれなおす"
+	next "EFFACER";"けす"
+	next "RETOUR@";"もどる@"
 
 UnknownText_0x4a358:
 	; Delete the saved LOG-IN PASSWORD?
@@ -510,75 +512,75 @@ Function4a373:
 	ret
 
 Function4a39a:
-	call Function4a485
+	call LoadMobileMenuUITiles
 	call Function4a492
-	call Function4a3aa
+	call DisplayMobileMenuBackground
 	call SetPalettes
 	ret
 
-Function4a3a7:
-	call Function4a485
-Function4a3aa:
+LoadTilesAndDisplayMobileMenuBackground:
+	call LoadMobileMenuUITiles
+DisplayMobileMenuBackground:
 	hlcoord 0, 0
 	lb bc, 3, 1
 	xor a
-	call Function4a6d8
+	call MobileMenu_FillBGArea
 	lb bc, 1, 1
 	ld a, $1
-	call Function4a6d8
+	call MobileMenu_FillBGArea
 	lb bc, 1, 1
 	xor a
-	call Function4a6d8
+	call MobileMenu_FillBGArea
 	lb bc, 1, 1
 	ld a, $1
-	call Function4a6d8
+	call MobileMenu_FillBGArea
 	lb bc, 4, 1
 	ld a, $2
-	call Function4a6d8
+	call MobileMenu_FillBGArea
 	lb bc, 1, 1
 	ld a, $3
-	call Function4a6d8
+	call MobileMenu_FillBGArea
 	lb bc, 1, 1
 	ld a, " "
-	call Function4a6d8
+	call MobileMenu_FillBGArea
 	hlcoord 1, 0
 	ld a, $1
 	lb bc, 3, 18
-	call Function4a6d8
+	call MobileMenu_FillBGArea
 	lb bc, 1, 18
 	ld a, $0
-	call Function4a6d8
+	call MobileMenu_FillBGArea
 	lb bc, 1, 18
 	ld a, $1
-	call Function4a6d8
+	call MobileMenu_FillBGArea
 	lb bc, 1, 18
 	ld a, $2
-	call Function4a6d8
+	call MobileMenu_FillBGArea
 	lb bc, 11, 18
 	ld a, " "
-	call Function4a6d8
+	call MobileMenu_FillBGArea
 	hlcoord 19, 0
 	lb bc, 3, 1
 	ld a, $0
-	call Function4a6d8
+	call MobileMenu_FillBGArea
 	lb bc, 1, 1
 	ld a, $1
-	call Function4a6d8
+	call MobileMenu_FillBGArea
 	lb bc, 1, 1
 	xor a
-	call Function4a6d8
+	call MobileMenu_FillBGArea
 	lb bc, 1, 1
 	ld a, $1
-	call Function4a6d8
+	call MobileMenu_FillBGArea
 	lb bc, 4, 1
 	ld a, $2
-	call Function4a6d8
+	call MobileMenu_FillBGArea
 	lb bc, 1, 1
 	ld a, $3
-	call Function4a6d8
+	call MobileMenu_FillBGArea
 	lb bc, 1, 1
 	ld a, " "
-	call Function4a6d8
+	call MobileMenu_FillBGArea
 	ret
 
 Function4a449:
@@ -606,10 +608,10 @@ Function4a449:
 	call ByteFill
 	ret
 
-Function4a485:
-	ld de, GFX_49c0c
+LoadMobileMenuUITiles:
+	ld de, MobileMenuUIGFX
 	ld hl, vTiles2 tile $00
-	lb bc, BANK(GFX_49c0c), 13
+	lb bc, BANK(MobileMenuUIGFX), 13
 	call Get2bpp
 	ret
 
@@ -644,7 +646,7 @@ MainMenu_MobileStudium:
 
 Function4a4c4:
 	call ClearBGPalettes
-	call Function4a3a7
+	call LoadTilesAndDisplayMobileMenuBackground
 	call Function4a492
 	call Function4a680
 	call ClearBGPalettes
@@ -653,7 +655,7 @@ Function4a4c4:
 	hlcoord 2, 0
 	ld b, $a
 	ld c, $e
-	call Function48cdc
+	call DisplayBlankGoldenBox
 	hlcoord 4, 2
 	ld de, String_4a5c5
 	call PlaceString
@@ -762,27 +764,27 @@ Function4a5b0:
 	jp Function4a545
 
 String_4a5c5:
-	db "MYSELF@";"じこしょうかい@"
+	db "IDENTITé@";"じこしょうかい@"
 String_4a5cd:
-	db "BEGIN BATTLE@";"たいせん　<GA>はじまるとき@"
+	db "DEBUT COMBAT@";"たいせん　<GA>はじまるとき@"
 String_4a5da:
-	db "WIN BATTLE@";"たいせん　<NI>かったとき@"
+	db "VICTOIRES@";"たいせん　<NI>かったとき@"
 String_4a5e6:
-	db "LOSE BATTLE@";"たいせん　<NI>まけたとき@"
+	db "DEFAITES@";"たいせん　<NI>まけたとき@"
 String_4a5f2:
-	db "BACK@";"もどる@"
+	db "RETOUR@";"もどる@"
 
 Strings_4a5f6:
-	db "Put on your CARD@";"めいし　や　ニュース　<NI>のせる@"
-	db "and the NEWS.@";"あなた<NO>あいさつです@"
-	db "Shown when a@";"モバイル　たいせん<GA>はじまるとき@"
-	db "battle begins.@";"あいて<NI>みえる　あいさつです@"
-	db "Shown when you@";"モバイル　たいせんで　かったとき@"
-	db "won a battle.@";"あいて<NI>みえる　あいさつです@"
-	db "Shown when you@";"モバイル　たいせんで　まけたとき@"
-	db "lost a battle.@";"あいて<NI>みえる　あいさつです@"
-	db "Return to the@";"まえ<NO>がめん　<NI>もどります@"
-	db "previous screen.@"
+	db "Affiché sur la@";"めいし　や　ニュース　<NI>のせる@"
+	db "CARTE et les NEWS.@";"あなた<NO>あいさつです@"
+	db "Affiché au début@";"モバイル　たいせん<GA>はじまるとき@"
+	db "d'un combat.@";"あいて<NI>みえる　あいさつです@"
+	db "Affiché lors@";"モバイル　たいせんで　かったとき@"
+	db "d'une victoire.@";"あいて<NI>みえる　あいさつです@"
+	db "Affiché lors@";"モバイル　たいせんで　まけたとき@"
+	db "d'une défaite.@";"あいて<NI>みえる　あいさつです@"
+	db "Revenir à l'écran@";"まえ<NO>がめん　<NI>もどります@"
+	db "précédent.@"
 
 Function4a680:
 	ld hl, w2DMenuCursorInitY
@@ -837,17 +839,17 @@ Function4a6c5:
 	call DelayFrames
 	ret
 
-Function4a6d8:
+MobileMenu_FillBGArea:
 	push bc
 	push hl
-.asm_4a6da
+.loop
 	ld [hli], a
 	dec c
-	jr nz, .asm_4a6da
+	jr nz, .loop
 	pop hl
 	ld bc, SCREEN_WIDTH
 	add hl, bc
 	pop bc
 	dec b
-	jr nz, Function4a6d8
+	jr nz, MobileMenu_FillBGArea
 	ret
