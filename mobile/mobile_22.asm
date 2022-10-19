@@ -2760,11 +2760,11 @@ Function8a1b0:
 
 Strings_8a1cc:
 	db   "Ouvrir le" ;"めいし<NO>せいりと　へんしゅうを"
-	next "FICHIER CARTE." ;"おこないます"
+	next "REPERTOIRE." ;"おこないます"
 	db   "@"
 
 	db   "Effacer le" ;"めいしフォルダー<NO>めいしと"
-	next "FICHIER CARTE." ;"あんしょうばんごう<WO>けします"
+	next "REPERTOIRE." ;"あんしょうばんごう<WO>けします"
 	db   "@"
 
 	db   "Retour." ;"まえ<NO>がめん<NI>もどります"
@@ -3060,7 +3060,7 @@ MenuHeader_0x8a435:
 MenuData_0x8a43d:
 	db STATICMENU_CURSOR | STATICMENU_WRAP ; flags
 	db 3 ; items
-	db "FICHIER CARTE@" ;"めいしりスト@"
+	db "REPERTOIRE@" ;"めいしりスト@"
 	db "MA CARTE@" ;"じぶんの　めいし@"
 	db "RETOUR@" ;"やめる@"
 
